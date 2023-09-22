@@ -14,6 +14,7 @@ router.post('/login', async (req, res, next) => {
         const { username, password } = req.body;
         // # FIND user with username and password
         const result = await db.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, password]);
+        
         if (result[0].length === 0) {
             // return res.status(400).json({ message: 'invalid username or password' });
             return next(createError(400, 'invalid username or password'))
@@ -74,7 +75,7 @@ router.put('/change-password', async (req, res, next) => {
         if (result[0].length === 0) {
             // #username not exist
             // return res.status(400).json({ message: 'username not found' })
-            return createError(400, 'username not found')
+            return next(createError(400, 'username not found'))
         }
         // #username exist
         await db.query('UPDATE users SET password = (?) WHERE username = (?)', [newPassword, username]);
@@ -82,7 +83,7 @@ router.put('/change-password', async (req, res, next) => {
 
     } catch (err) {
         // res.status(500).json({ message: 'internal server error' })
-        createError(500, 'internal server error')
+        next(createError(500, 'internal server error'))
     }
 })
 

@@ -17,7 +17,8 @@ router.post('/', async (req, res, next) => {
         res.status(200).json({ message: 'create todo successfully' });
 
     } catch (err) {
-        res.status(500).json({ message: 'internal server error' })
+        // res.status(500).json({ message: 'internal server error' })
+        next(createError(500, 'internal server error'))
     }
 })
 
@@ -68,12 +69,10 @@ router.delete('/:idTodoDelete', async (req, res, next) => {
             return next(createError(400, 'todo with this ID not found'))
         }
         await db.query('DELETE FROM todos WHERE id = (?)', [idTodoDelete]);
-        // res.status(200).json({ message: 'delete successfully' })
-        next(createError(200, 'delete successfully'))
+        res.status(200).json({ message: 'delete successfully' })
 
     } catch (err) {
         // res.status(500).json({ message: 'internal server error' })
-
         next(createError(500, 'internal server error'))
     }
 })
